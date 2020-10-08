@@ -1,0 +1,36 @@
+{
+  "name": "ike-framework",
+  "version": "1.0.0",
+  "description": "Scripting Framework (TS/JS) for nodejs (commands oriented). Used by ike-cli project.",
+  "main": "out/Main.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "ike",
+    "ike-utilities",
+    "ike-framework",
+    "scripting",
+    "framework",
+    "nodejs",
+    "typescirpt",
+    "ts",
+    "js",
+    "ts-node"
+  ],
+  "author": "Mark Fainstein",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "commander": "^6.1.0",
+    "reflect-metadata": "^0.1.13",
+    "ts-node": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.12",
+    "@types/mocha": "^8.0.3",
+    "chai": "^4.2.0",
+    "mocha": "^8.1.3",
+    "source-map-support": "^0.5.19",
+    "typescript": "^4.0.2"
+  }
+}
