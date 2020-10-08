@@ -9,7 +9,7 @@ export abstract class CommandBase implements Command {
     buildArguments(...args: any): Map<string, string> {
         let argumentsMap: Map<string, string> = new Map();
         let i: number = 0;
-        let commandArguments: string[] = Reflect.getMetadata("ike:arguments", this.constructor) || [];
+        let commandArguments: string[] = Reflect.getMetadata("ike:requiredArguments", this.constructor) || [];
         for (let argument of commandArguments) {
             let value: string = args[i];
             argumentsMap.set(argument, value);
@@ -20,7 +20,7 @@ export abstract class CommandBase implements Command {
 
     buildOptions(...args: any): Map<string, string> {
         let optionsMap: Map<string, string> = new Map();
-        let commandArguments: string[] = Reflect.getMetadata("ike:arguments", this.constructor) || [];
+        let commandArguments: string[] = Reflect.getMetadata("ike:requiredArguments", this.constructor) || [];
         let declaredOptions: CommandOption[] = Reflect.getMetadata("ike:options", this.constructor) || [];
         let commanderOptions: any = args[commandArguments.length];
         for (let option of declaredOptions) {
@@ -56,9 +56,9 @@ export abstract class CommandBase implements Command {
 
 //============================================== Decorators ============================================================
 
-export function args(args: string[]): (target: any) => any {
+export function requiredArgs(args: string[]): (target: any) => any {
     return (target) => {
-        Reflect.defineMetadata("ike:arguments", args, target);
+        Reflect.defineMetadata("ike:requiredArguments", args, target);
         return target;
     }
 
