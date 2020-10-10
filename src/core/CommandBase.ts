@@ -1,12 +1,16 @@
 import {Command} from "./Command";
 import {CommandOption} from "./CommandOption";
-import * as Commander from 'commander';
 import "reflect-metadata";
+import {CommandMetadata} from "./CommandMetadata";
 
 export abstract class CommandBase implements Command {
-    commanderCommand?: Commander.Command;
+    private subCommands: Command[];
 
-    buildArguments(...args: any): Map<string, string> {
+    constructor() {
+        this.subCommands = [];
+    }
+
+    buildRequiredArguments(...args: any): Map<string, string> {
         let argumentsMap: Map<string, string> = new Map();
         let i: number = 0;
         let commandArguments: string[] = Reflect.getMetadata("ike:requiredArguments", this.constructor) || [];
@@ -32,25 +36,24 @@ export abstract class CommandBase implements Command {
 
     }
 
-    async setCommanderCommand(commanderCommand: Commander.Command): Promise<void> {
-        this.commanderCommand = commanderCommand;
-        await this.afterCommanderCommandSet();
-    }
-
-    execute(...args: any): void {
-        let argumentsMap: Map<string, string> = this.buildArguments(...args);
+    async execute(...args: any): Promise<void> {
+        let argumentsMap: Map<string, string> = this.buildRequiredArguments(...args);
         let optionsMap: Map<string, string> = this.buildOptions(...args);
-        this.doExecute(argumentsMap, optionsMap);
+        await this.doExecute(argumentsMap, optionsMap);
     }
 
-    abstract doExecute(argumentValues: Map<string, string>, optionValues: Map<string, string>): void;
+    abstract async doExecute(argumentValues: Map<string, string>, optionValues: Map<string, string>): Promise<void>;
 
-    async afterCommanderCommandSet(): Promise<void> {
-        //will be overridden - TODO: is this needed?
-    }
-
-    getDefaultName():string {
+    getDefaultName(): string {
         return this.constructor.name.toLowerCase().replace("command", "");
+    }
+
+    addSubCommand(command: Command): void {
+        this.subCommands.push(command);
+    }
+
+    getSubCommands(): Command[] {
+        return this.subCommands;
     }
 }
 
@@ -58,7 +61,7 @@ export abstract class CommandBase implements Command {
 
 export function requiredArgs(args: string[]): (target: any) => any {
     return (target) => {
-        Reflect.defineMetadata("ike:requiredArguments", args, target);
+        Reflect.defineMetadata(CommandMetadata.RequiredArgs, args, target);
         return target;
     }
 
@@ -66,28 +69,28 @@ export function requiredArgs(args: string[]): (target: any) => any {
 
 export function options(options: CommandOption[]): (target: any) => any {
     return (target) => {
-        Reflect.defineMetadata("ike:options", options, target);
+        Reflect.defineMetadata(CommandMetadata.Options, options, target);
         return target;
     }
 }
 
 export function usage(usageText: string): (target: any) => any {
     return (target) => {
-        Reflect.defineMetadata("ike:usage", usageText, target);
+        Reflect.defineMetadata(CommandMetadata.Usage, usageText, target);
         return target;
     }
 }
 
 export function description(descriptionText: string): (target: any) => any {
     return (target) => {
-        Reflect.defineMetadata("ike:description", descriptionText, target);
+        Reflect.defineMetadata(CommandMetadata.Description, descriptionText, target);
         return target;
     }
 }
 
 export function commandName(name: string): (target: any) => any {
     return (target) => {
-        Reflect.defineMetadata("ike:commandName", name, target);
+        Reflect.defineMetadata(CommandMetadata.Name, name, target);
         return target;
     }
 }

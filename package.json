@@ -21,7 +21,6 @@
   "author": "Mark Fainstein",
   "license": "GPL-3.0",
   "dependencies": {
-    "commander": "^6.1.0",
     "reflect-metadata": "^0.1.13",
     "ts-node": "^9.0.0"
   },
