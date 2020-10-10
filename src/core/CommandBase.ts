@@ -1,10 +1,12 @@
-import {Command} from "./Command";
+
 import {CommandOption} from "./CommandOption";
 import "reflect-metadata";
 import {CommandMetadata} from "./CommandMetadata";
+import {Command} from "./Command";
 
 export abstract class CommandBase implements Command {
     private subCommands: Command[];
+    public executionMode:string = "unknown";
 
     constructor() {
         this.subCommands = [];
@@ -35,14 +37,6 @@ export abstract class CommandBase implements Command {
         return optionsMap;
 
     }
-
-    async execute(...args: any): Promise<void> {
-        let argumentsMap: Map<string, string> = this.buildRequiredArguments(...args);
-        let optionsMap: Map<string, string> = this.buildOptions(...args);
-        await this.doExecute(argumentsMap, optionsMap);
-    }
-
-    abstract async doExecute(argumentValues: Map<string, string>, optionValues: Map<string, string>): Promise<void>;
 
     getDefaultName(): string {
         return this.constructor.name.toLowerCase().replace("command", "");
