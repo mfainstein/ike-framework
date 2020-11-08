@@ -5,7 +5,7 @@ export abstract class CommandBaseSync extends CommandBase implements CommandSync
 
     public executionMode = "Sync";
 
-    execute(...args: any): void {
+    execute(...args: any[]): void {
         let argumentsMap: Map<string, string> = this.buildRequiredArguments(...args);
         let optionsMap: Map<string, string> = this.buildOptions(...args);
         this.doExecute(argumentsMap, optionsMap);

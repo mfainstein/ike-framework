@@ -1,4 +1,3 @@
-
 import {CommandOption} from "./CommandOption";
 import "reflect-metadata";
 import {CommandMetadata} from "./CommandMetadata";
@@ -6,16 +5,17 @@ import {Command} from "./Command";
 
 export abstract class CommandBase implements Command {
     private subCommands: Command[];
-    public executionMode:string = "unknown";
+    public executionMode: string = "unknown";
+    private static COMMAND_SUFFIX: string = "command";
 
     constructor() {
         this.subCommands = [];
     }
 
-    buildRequiredArguments(...args: any): Map<string, string> {
+    buildRequiredArguments(...args: any[]): Map<string, string> {
         let argumentsMap: Map<string, string> = new Map();
         let i: number = 0;
-        let commandArguments: string[] = Reflect.getMetadata("ike:requiredArguments", this.constructor) || [];
+        let commandArguments: string[] = Reflect.getMetadata(CommandMetadata.RequiredArgs, this.constructor) || [];
         for (let argument of commandArguments) {
             let value: string = args[i];
             argumentsMap.set(argument, value);
@@ -24,10 +24,10 @@ export abstract class CommandBase implements Command {
         return argumentsMap;
     }
 
-    buildOptions(...args: any): Map<string, string> {
+    buildOptions(...args: any[]): Map<string, string> {
         let optionsMap: Map<string, string> = new Map();
-        let commandArguments: string[] = Reflect.getMetadata("ike:requiredArguments", this.constructor) || [];
-        let declaredOptions: CommandOption[] = Reflect.getMetadata("ike:options", this.constructor) || [];
+        let commandArguments: string[] = Reflect.getMetadata(CommandMetadata.RequiredArgs, this.constructor) || [];
+        let declaredOptions: CommandOption[] = Reflect.getMetadata(CommandMetadata.Options, this.constructor) || [];
         let commanderOptions: any = args[commandArguments.length];
         for (let option of declaredOptions) {
             //TODO: this is dangerous, actually the command name should be derived from the "flag"
@@ -39,7 +39,7 @@ export abstract class CommandBase implements Command {
     }
 
     getDefaultName(): string {
-        return this.constructor.name.toLowerCase().replace("command", "");
+        return this.constructor.name.toLowerCase().replace(CommandBase.COMMAND_SUFFIX, "");
     }
 
     addSubCommand(command: Command): void {
@@ -48,6 +48,10 @@ export abstract class CommandBase implements Command {
 
     getSubCommands(): Command[] {
         return this.subCommands;
+    }
+
+    async setup(): Promise<void> {
+        //will be overridden if needed
     }
 }
 

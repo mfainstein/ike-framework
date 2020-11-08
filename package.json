@@ -4,7 +4,8 @@
   "description": "Scripting Framework (TS/JS) for nodejs (commands oriented). Used by ike-cli project.",
   "main": "out/Main.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "compile": "tsc -p ."
   },
   "keywords": [
     "ike",
@@ -21,8 +22,7 @@
   "author": "Mark Fainstein",
   "license": "GPL-3.0",
   "dependencies": {
-    "reflect-metadata": "^0.1.13",
-    "ts-node": "^9.0.0"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "@types/chai": "^4.2.12",
