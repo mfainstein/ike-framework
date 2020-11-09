@@ -5,7 +5,8 @@
   "main": "out/Main.js",
   "scripts": {
     "test": "test",
-    "compile": "tsc -p ."
+    "compile": "tsc -p .",
+    "simpleTest": "node out/tests/SimpleTest.js"
   },
   "keywords": [
     "ike",

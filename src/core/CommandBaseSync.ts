@@ -7,6 +7,12 @@ export class CommandBaseSync extends CommandBase implements CommandSync {
 
     public executionMode = "Sync";
 
+    protected executeStage(stage: CommandStage): void {
+        this.spinner.setText(stage.spinnerText);
+        // @ts-ignore
+        this[stage.methodName]();
+    }
+
     execute(...args: any[]): void {
         let argumentsMap: Map<string, string> = this.buildRequiredArguments(...args);
         let optionsMap: Map<string, string> = this.buildOptions(...args);

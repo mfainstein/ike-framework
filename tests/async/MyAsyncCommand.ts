@@ -5,12 +5,22 @@ export class MyAsyncCommand extends CommandBaseAsync {
 
     @stage("doSomething...")
     public async doSomething(): Promise<void> {
-        console.log("doSomething!");
+        return new Promise((resolve, reject)=>{
+            setTimeout(()=>{
+                //console.log("hello");
+                resolve();
+            }, 10000);
+        });
     }
 
     @stage("doMore...!")
     public async doMore(): Promise<void> {
-        console.log("doMore!");
+        return new Promise((resolve, reject)=>{
+            setTimeout(()=>{
+                //console.log("hello");
+                resolve();
+            }, 3000);
+        });
     }
 
 }

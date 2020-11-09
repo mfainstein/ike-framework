@@ -65,11 +65,7 @@ export abstract class CommandBase implements Command {
         //will be overridden if needed
     }
 
-    protected executeStage(stage: CommandStage): void {
-        this.spinner.setText(stage.spinnerText);
-        // @ts-ignore
-        this[stage.methodName]();
-    }
+
 }
 
 //============================================== Decorators ============================================================
@@ -110,6 +106,14 @@ export function commandName(name: string): (target: any) => any {
     }
 }
 
+/**
+ * A decorator to declare a stage - a chunk of execution that is encapsulated in a method.
+ * The decorator allows to specify a few execution attributes (currently only ones related to the spinner).
+ *
+ * @param spinnerText
+ * @param stageName
+ * @param spinnerOptions
+ */
 export function stage(spinnerText: string, stageName?: string, spinnerOptions?: SpinnerOptions): (target: any,
                                                                                                   propertyKey: string,
                                                                                                   descriptor: PropertyDescriptor) => any {

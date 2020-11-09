@@ -7,6 +7,13 @@ export class CommandBaseAsync extends CommandBase implements CommandAsync {
 
     public executionMode = "Async";
 
+    protected async executeStage(stage: CommandStage): Promise<void> {
+        this.spinner.setText(stage.spinnerText);
+        // @ts-ignore
+        await this[stage.methodName]();
+        this.spinner.clear();
+    }
+
     private promisifyStage(stage: CommandStage): Promise<void> {
         return new Promise((resolve, reject) => {
             this.executeStage(stage);
@@ -19,21 +26,17 @@ export class CommandBaseAsync extends CommandBase implements CommandAsync {
         let optionsMap: Map<string, string> = this.buildOptions(...args);
 
         let stages: CommandStage[] = Reflect.getMetadata(CommandMetadata.Stages, this.constructor) || [];
+
         if (stages.length != 0) {
-            let promises: Promise<void>[] = [];
-            promises.push(new Promise((resolve, reject) => {
-                this.spinner.start();
-                resolve();
-            }));
+
+            this.spinner.start();
             for (let stage of stages) {
-                let promisedStage: Promise<void> = this.promisifyStage(stage);
-                promises.push(promisedStage);
+                //console.log("executing "+stage);
+                await this.executeStage(stage);
             }
-            promises.push(new Promise((resolve, reject) => {
-                this.spinner.clear();
-                resolve();
-            }));
-            await Promise.all(promises);
+            this.spinner.stop();
+
+
         } else { //no stages, use the overridden doExecute method.
             await this.doExecute(argumentsMap, optionsMap);
         }
