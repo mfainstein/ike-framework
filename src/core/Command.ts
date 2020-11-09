@@ -12,3 +12,5 @@ export interface Command {
 
     setup(): Promise<void>;
 }
+
+export type executingMethod = () => any;

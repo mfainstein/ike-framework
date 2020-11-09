@@ -1,6 +1,6 @@
 {
   "name": "ike-framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scripting Framework (TS/JS) for nodejs (commands oriented). Used by ike-cli project.",
   "main": "out/Main.js",
   "scripts": {
@@ -22,6 +22,7 @@
   "author": "Mark Fainstein",
   "license": "GPL-3.0",
   "dependencies": {
+    "ora": "^5.1.0",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {

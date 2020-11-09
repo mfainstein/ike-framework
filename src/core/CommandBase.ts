@@ -1,15 +1,22 @@
 import {CommandOption} from "./CommandOption";
 import "reflect-metadata";
 import {CommandMetadata} from "./CommandMetadata";
-import {Command} from "./Command";
+import {Command, executingMethod} from "./Command";
+import {Spinner} from "../utils/spinner/Spinner";
+import {SpinnerOptions} from "../utils/spinner/SpinnerOptions";
+import {CommandStage} from "./CommandStage";
 
 export abstract class CommandBase implements Command {
     private subCommands: Command[];
     public executionMode: string = "unknown";
     private static COMMAND_SUFFIX: string = "command";
+    private stages: string[];
+    public spinner: Spinner;
 
     constructor() {
         this.subCommands = [];
+        this.stages = [];
+        this.spinner = new Spinner();
     }
 
     buildRequiredArguments(...args: any[]): Map<string, string> {
@@ -50,8 +57,18 @@ export abstract class CommandBase implements Command {
         return this.subCommands;
     }
 
+    setSpinnerText(text: string): void {
+        this.spinner.setText(text);
+    }
+
     async setup(): Promise<void> {
         //will be overridden if needed
+    }
+
+    protected executeStage(stage: CommandStage): void {
+        this.spinner.setText(stage.spinnerText);
+        // @ts-ignore
+        this[stage.methodName]();
     }
 }
 
@@ -91,4 +108,24 @@ export function commandName(name: string): (target: any) => any {
         Reflect.defineMetadata(CommandMetadata.Name, name, target);
         return target;
     }
+}
+
+export function stage(spinnerText: string, stageName?: string, spinnerOptions?: SpinnerOptions): (target: any,
+                                                                                                  propertyKey: string,
+                                                                                                  descriptor: PropertyDescriptor) => any {
+    return (
+        target: any,
+        propertyKey: string,
+        descriptor: PropertyDescriptor
+    ) => {
+        let stages: CommandStage[] = Reflect.getMetadata(CommandMetadata.Stages, target.constructor) || [];
+        stages.push({
+            methodName: propertyKey,
+            name: stageName || propertyKey,
+            spinnerText: spinnerText,
+            spinnerOptions: spinnerOptions
+        });
+        Reflect.defineMetadata(CommandMetadata.Stages, stages, target.constructor);
+        return target;
+    };
 }

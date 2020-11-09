@@ -3,5 +3,6 @@ export enum CommandMetadata {
     Options = "ike:options",
     Usage = "ike:usage",
     Description = "ike:description",
-    Name = "ike:commandName"
+    Name = "ike:commandName",
+    Stages = "ike:stages"
 }
