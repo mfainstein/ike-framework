@@ -7,16 +7,18 @@ import {SpinnerOptions} from "../utils/spinner/SpinnerOptions";
 import {CommandStage} from "./CommandStage";
 
 export abstract class CommandBase implements Command {
-    private subCommands: Command[];
+    private readonly subCommands: Command[];
     public executionMode: string = "unknown";
     private static COMMAND_SUFFIX: string = "command";
     private stages: string[];
-    public spinner: Spinner;
+    protected spinner: Spinner;
+    protected storage: Map<string, any>;
 
     constructor() {
         this.subCommands = [];
         this.stages = [];
         this.spinner = new Spinner();
+        this.storage = new Map<string, any>();
     }
 
     buildRequiredArguments(...args: any[]): Map<string, string> {
@@ -62,9 +64,22 @@ export abstract class CommandBase implements Command {
     }
 
     async setup(): Promise<void> {
+        this.clearStorage();
         //will be overridden if needed
     }
 
+    storeValue<T>(name: string, value: T): T {
+        this.storage.set(name, value);
+        return value;
+    }
+
+    getValue<T>(name: string): T {
+        return this.storage.get(name);
+    }
+
+    clearStorage(): void {
+        this.storage = new Map<string, any>();
+    }
 
 }
 
@@ -108,7 +123,7 @@ export function commandName(name: string): (target: any) => any {
 
 /**
  * A decorator to declare a stage - a chunk of execution that is encapsulated in a method.
- * The decorator allows to specify a few execution attributes (currently only ones related to the spinner).
+ * The decorator allows to specify a few execution attributes.
  *
  * @param spinnerText
  * @param stageName

@@ -7,18 +7,13 @@ export class CommandBaseAsync extends CommandBase implements CommandAsync {
 
     public executionMode = "Async";
 
-    protected async executeStage(stage: CommandStage): Promise<void> {
+    protected async executeStage(stage: CommandStage,
+                                      argumentValues: Map<string, string>,
+                                      optionValues: Map<string, string>): Promise<void> {
         this.spinner.setText(stage.spinnerText);
         // @ts-ignore
-        await this[stage.methodName]();
+        await this[stage.methodName](argumentValues, optionValues); //TODO: apply?
         this.spinner.clear();
-    }
-
-    private promisifyStage(stage: CommandStage): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.executeStage(stage);
-            resolve();
-        });
     }
 
     async execute(...args: any[]): Promise<void> {
@@ -32,7 +27,7 @@ export class CommandBaseAsync extends CommandBase implements CommandAsync {
             this.spinner.start();
             for (let stage of stages) {
                 //console.log("executing "+stage);
-                await this.executeStage(stage);
+                await this.executeStage(stage, argumentsMap, optionsMap);
             }
             this.spinner.stop();
 

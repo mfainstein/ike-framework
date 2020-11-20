@@ -7,10 +7,13 @@ export class CommandBaseSync extends CommandBase implements CommandSync {
 
     public executionMode = "Sync";
 
-    protected executeStage(stage: CommandStage): void {
+    protected executeStage(stage: CommandStage,
+                                     argumentValues: Map<string, string>,
+                                     optionValues: Map<string, string>): void {
         this.spinner.setText(stage.spinnerText);
         // @ts-ignore
-        this[stage.methodName]();
+        this[stage.methodName](argumentValues, optionValues); //TODO: apply?
+        this.spinner.clear();
     }
 
     execute(...args: any[]): void {
@@ -23,7 +26,7 @@ export class CommandBaseSync extends CommandBase implements CommandSync {
 
         if (stages.length != 0) {
             for (let stage of stages){
-                this.executeStage(stage);
+                this.executeStage(stage, argumentsMap, optionsMap);
             }
             this.spinner.clear();
         } else { //no stages, use the overridden doExecute method.

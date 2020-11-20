@@ -1,5 +1,5 @@
-import {CommandBaseAsync} from "../../src/core/CommandBaseAsync";
-import {commandName, stage} from "../../src/core/CommandBase";
+import {CommandBaseAsync} from "../../core/CommandBaseAsync";
+import {commandName, stage} from "../../core/CommandBase";
 
 export class MyAsyncCommand extends CommandBaseAsync {
 

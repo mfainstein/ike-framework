@@ -1,5 +1,5 @@
-import {stage} from "../../src/core/CommandBase";
-import {CommandBaseSync} from "../../src/core/CommandBaseSync";
+import {stage} from "../../core/CommandBase";
+import {CommandBaseSync} from "../../core/CommandBaseSync";
 
 export class MySyncCommand extends CommandBaseSync {
     @stage("do... A... Thing...!")

@@ -1,6 +1,6 @@
 {
   "name": "ike-framework",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "Scripting Framework (TS/JS) for nodejs (commands oriented). Used by ike-cli project.",
   "main": "out/Main.js",
   "scripts": {

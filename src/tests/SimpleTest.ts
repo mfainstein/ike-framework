@@ -1,5 +1,5 @@
 import {MyAsyncCommand} from "./async/MyAsyncCommand";
-import {Command} from "../src/core/Command";
+import {Command} from "../core/Command";
 
 let command:MyAsyncCommand = new MyAsyncCommand();
 command.execute();

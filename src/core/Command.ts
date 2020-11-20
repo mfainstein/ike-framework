@@ -11,6 +11,14 @@ export interface Command {
     getDefaultName(): string;
 
     setup(): Promise<void>;
+
+    storeValue<T>(name: string, value: T): T;
+
+    getValue<T>(name: string): T;
+
+    clearStorage(): void;
+
+
 }
 
 export type executingMethod = () => any;
