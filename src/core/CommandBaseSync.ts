@@ -13,7 +13,13 @@ export class CommandBaseSync extends CommandBase implements CommandSync {
         this.spinner.setText(stage.spinnerText);
         // @ts-ignore
         this[stage.methodName](argumentValues, optionValues); //TODO: apply?
-        this.spinner.clear();
+        if (stage.spinnerOptions.finishWithSucceed){
+            this.spinner.succeed();
+        }
+        else {
+            this.spinner.clear();
+        }
+
     }
 
     execute(...args: any[]): void {
@@ -22,9 +28,8 @@ export class CommandBaseSync extends CommandBase implements CommandSync {
 
         let stages: CommandStage[] = Reflect.getMetadata(CommandMetadata.Stages, this.constructor) || [];
 
-        this.spinner.start();
-
         if (stages.length != 0) {
+            this.spinner.start();
             for (let stage of stages){
                 this.executeStage(stage, argumentsMap, optionsMap);
             }
